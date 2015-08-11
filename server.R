@@ -50,8 +50,8 @@ shinyServer(function(input, output) {
   
   output$debug<-renderText({
     str(input$url)
-    #htmlContent()
     xpath$data[[input$name]]
+    substr(htmlContent(), 1,100)
   })
   
   output$table<-DT::renderDataTable({

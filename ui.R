@@ -13,7 +13,7 @@ shinyUI(bootstrapPage(
                    actionButton('load', 'Load page')
                    ),
   
-  #textOutput('debug'),
+  textOutput('debug'),
   textInput('name', 'name', value='title'),
   textInput('xpath', 'xpath', value="//div[@class='item-status']/h3"),
   selectInput('type', 'value type', 
