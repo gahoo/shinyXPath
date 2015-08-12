@@ -16,13 +16,19 @@ shinyServer(function(input, output, session) {
   })
   
   htmlContent <- eventReactive(input$load, {
-    if(input$htmlSource == 'url'){
-      html<-getURL(input$url, .encoding=input$encoding)
-    }else{
-      html<-try(readLines(input$html_file$datapath, encoding=input$encoding))
-      html<-paste0(html, collapse = '\n')
-    }
-    updateAceEditor(session, 'html_codes', value=html, mode="html", theme='textmate')
+    withProgress(message = 'Loading Pages',
+                 detail= 'Please wait', value=0,
+                 {
+                   if(input$htmlSource == 'url'){
+                     incProgress(1/3, detail = 'From URL')
+                     html<-getURL(input$url, .encoding=input$encoding)
+                   }else{
+                     incProgress(1/3, detail = 'From File Upload')
+                     html<-try(readLines(input$html_file$datapath, encoding=input$encoding))
+                     html<-paste0(html, collapse = '\n')
+                   }
+                   updateAceEditor(session, 'html_codes', value=html, mode="html", theme='textmate')
+                 })
     html
   })
   
