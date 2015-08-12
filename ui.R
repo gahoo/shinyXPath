@@ -18,6 +18,7 @@ shinyUI(fluidPage(
                  textOutput('debug')
                  ),
         tabPanel('XPath',
+                 a("What's XPath",href='http://www.w3school.com.cn/xpath/xpath_syntax.asp'),
                  textInput('name', 'name', value='title'),
                  textInput('xpath', 'xpath', value="//div[@class='item-status']/h3"),
                  selectInput('type', 'value type', 
