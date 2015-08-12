@@ -31,10 +31,11 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel('HTML',
-                 aceEditor("ace", value="", height="700px")
+                 aceEditor("html_codes", mode='html', value="", height="700px")
                  ),
         tabPanel('Table',
                  wellPanel(textOutput('preview')),
+                 checkboxInput('sameEncodingOnSave', 'same Encoding with source', F),
                  downloadButton('downloadTable', 'Download'),
                  DT::dataTableOutput('table')
                  )

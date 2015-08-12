@@ -22,12 +22,12 @@ shinyServer(function(input, output, session) {
       html<-try(readLines(input$html_file$datapath, encoding=input$encoding))
       html<-paste0(html, collapse = '\n')
     }
-    updateAceEditor(session, 'ace', value=html, mode="r", theme='textmate')
+    updateAceEditor(session, 'html_codes', value=html, mode="html", theme='textmate')
     html
   })
   
   doc <- reactive({
-    htmlParse(htmlContent(), asText=TRUE, encoding=input$encoding)
+    htmlParse(input$html_codes, asText=TRUE, encoding=input$encoding)
   })
   
   xpath <- reactiveValues(data = NULL)
@@ -67,7 +67,8 @@ shinyServer(function(input, output, session) {
     filename = 'table.txt',
     content = function(file) {
       dt<-as.data.frame(xpath$data)
-      write.table(dt, file, sep='\t', quote=F, row.names=F)
+      fileEncode<-ifelse(input$sameEncodingOnSave, input$encoding, '')
+      write.table(dt, file, sep='\t', quote=F, row.names=F, fileEncoding=fileEncode)
     }
   )
   
