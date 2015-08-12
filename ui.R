@@ -11,7 +11,7 @@ shinyUI(fluidPage(
                               choice = c('url', 'upload'),
                               selected = 'url'),
                  selectInput('encoding', 'encoding',
-                             choice = c('unknown','gbk', 'utf-8'),
+                             choice = c('unknown', 'gb2312', 'gbk', 'big5', 'utf-8'),
                              selected = 'unknown'),
                  uiOutput('html_input'),
                  actionButton('load', 'Load page'),
