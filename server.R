@@ -1,42 +1,46 @@
 library(shiny)
 library(XML)
 library(RCurl)
+library(shinyAce)
 
 xmlFunc<-list('xmlGetAttr'=xmlGetAttr, 'xmlValue'=xmlValue)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   output$html_input<-renderUI({
     if(input$htmlSource == 'url'){
       textInput('url', 'url', value='https://ju.taobao.com/tg/brand_items.htm?act_sign_id=8115264')
     }else{
-      fileInput('html_file', 'html')
+      fileInput('html_file', 'html', multiple = F)
     }
   })
   
   htmlContent <- eventReactive(input$load, {
     if(input$htmlSource == 'url'){
-      getURL(input$url)
+      html<-getURL(input$url, .encoding=input$encoding)
     }else{
-      readLines(input$html_file$datapath)
+      html<-try(readLines(input$html_file$datapath, encoding=input$encoding))
+      html<-paste0(html, collapse = '\n')
     }
+    updateAceEditor(session, 'ace', value=html, mode="r", theme='textmate')
+    html
   })
   
   doc <- reactive({
-    htmlParse(htmlContent(), asText=TRUE)
+    htmlParse(htmlContent(), asText=TRUE, encoding=input$encoding)
   })
   
   xpath <- reactiveValues(data = NULL)
   
   observeEvent(input$add, {
-    xpath$data[[input$name]] <- example()
+    xpath$data[[input$name]] <- xPathContent()
   })
   
   observeEvent(input$remove, {
     xpath$data[[input$name]] <- NULL
   })
   
-  example <- reactive({
+  xPathContent <- reactive({
     if(input$type == 'xmlValue'){
       xpathSApply(doc(), input$xpath, xmlFunc[[input$type]])
     }else{
@@ -44,22 +48,19 @@ shinyServer(function(input, output) {
     }
   })
   
-  output$example <- renderText({
-    head(example())
+  output$preview <- renderText({
+    head(xPathContent())
   })
   
   output$debug<-renderText({
-    str(input$url)
-    xpath$data[[input$name]]
-    substr(htmlContent(), 1,100)
+    #str(input$url)
+    #xpath$data[[input$name]]
+    substr(htmlContent(),1,0)
   })
   
   output$table<-DT::renderDataTable({
     dt<-as.data.frame(xpath$data)
-    datatable(dt,extensions = 'TableTools', options = list(
-      dom = 'T<"clear">lfrtip',
-      tableTools = list(sSwfPath = copySWF())
-    ))
+    dt
   })
   
   output$downloadTable <- downloadHandler(
