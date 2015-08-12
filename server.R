@@ -68,7 +68,8 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       dt<-as.data.frame(xpath$data)
       fileEncode<-ifelse(input$sameEncodingOnSave, input$encoding, '')
-      write.table(dt, file, sep='\t', quote=F, row.names=F, fileEncoding=fileEncode)
+      eol<-ifelse(input$isWindows, '\r\n', '\n')
+      write.table(dt, file, sep='\t', eol=eol, quote=F, row.names=F, fileEncoding=fileEncode)
     }
   )
   

@@ -37,6 +37,7 @@ shinyUI(fluidPage(
         tabPanel('Table',
                  wellPanel(textOutput('preview')),
                  checkboxInput('sameEncodingOnSave', 'same Encoding with source', F),
+                 checkboxInput('isWindows', 'windows end of line', T),
                  downloadButton('downloadTable', 'Download'),
                  DT::dataTableOutput('table')
                  )
