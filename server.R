@@ -61,7 +61,7 @@ shinyServer(function(input, output, session) {
     htmlParse(input$html_codes, asText=TRUE, encoding=input$encoding)
   })
   
-  xpath <- reactiveValues(data = NULL)
+  xpath <- reactiveValues(data = list())
   
   observeEvent(input$add, {
     xpath$data[[input$name]] <- xPathContent()
@@ -69,6 +69,10 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$remove, {
     xpath$data[[input$name]] <- NULL
+  })
+  
+  observeEvent(input$clear, {
+    xpath$data <- list()
   })
   
   xPathContent <- reactive({
