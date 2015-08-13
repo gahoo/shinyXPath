@@ -14,7 +14,6 @@ shinyUI(fluidPage(
                              choice = c('unknown', 'gb2312', 'gbk', 'big5', 'utf-8'),
                              selected = 'unknown'),
                  uiOutput('html_input'),
-                 textInput('wait', 'wait interval', value=0),
                  actionButton('load', 'Load page'),
                  textOutput('debug')
                  ),

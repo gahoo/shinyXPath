@@ -9,7 +9,8 @@ shinyServer(function(input, output, session) {
   
   output$html_input<-renderUI({
     if(input$htmlSource == 'url'){
-      aceEditor("url", mode='text', value="https://ju.taobao.com/tg/brand_items.htm?act_sign_id=8115264", height="100px")
+      list(aceEditor("url", mode='text', value="https://ju.taobao.com/tg/brand_items.htm?act_sign_id=8115264", height="100px"),
+           textInput('wait', 'wait interval', value=0))
     }else{
       fileInput('html_file', 'html', multiple = T)
     }
