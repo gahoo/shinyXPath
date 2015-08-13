@@ -25,7 +25,7 @@ shinyServer(function(input, output, session) {
       html<-lapply(urls, function(url){
         incProgress(step_size, detail = paste0('From URL ', url))
         Sys.sleep(wait)
-        getURL(url, .encoding=input$encoding)
+        getURL(url, .encoding=input$encoding, ssl.verifypeer=F)
       })
       do.call('paste0', html)
     }
