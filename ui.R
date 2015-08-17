@@ -25,7 +25,8 @@ shinyUI(fluidPage(
                              choice = c('xmlGetAttr', 'xmlValue'),
                              selected='xmlValue'),
                  actionButton('add', 'add to table'),
-                 actionButton('remove', 'remove from table')
+                 actionButton('remove', 'remove from table'),
+                 actionButton('clear', 'clear table')
                  )
         )
     ),

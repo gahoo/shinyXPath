@@ -9,23 +9,48 @@ shinyServer(function(input, output, session) {
   
   output$html_input<-renderUI({
     if(input$htmlSource == 'url'){
-      textInput('url', 'url', value='https://ju.taobao.com/tg/brand_items.htm?act_sign_id=8115264')
+      list(aceEditor("url", mode='text', value="https://ju.taobao.com/tg/brand_items.htm?act_sign_id=8115264", height="100px"),
+           textInput('wait', 'wait interval', value=0))
     }else{
-      fileInput('html_file', 'html', multiple = F)
+      fileInput('html_file', 'html', multiple = T)
     }
   })
   
   htmlContent <- eventReactive(input$load, {
+    
+    getHtmlFromURLs<-function(wait=0){
+      urls<-unlist(strsplit(input$url, split='\n'))
+      n<-length(urls)
+      step_size<-1/n
+      html<-lapply(urls, function(url){
+        incProgress(step_size, detail = paste0('From URL ', url))
+        Sys.sleep(wait)
+        getURL(url, .encoding=input$encoding, ssl.verifypeer=F)
+      })
+      do.call('paste0', html)
+    }
+    
+    getHtmlFromUploads<-function(){
+      n<-nrow(input$html_file)
+      step_size<-1/n
+      
+      html<-lapply(input$html_file$datapath, function(filepath){
+        incProgress(step_size, detail = paste0('From File ', filepath))
+        content<-try(readLines(filepath,
+                      encoding=input$encoding))
+        paste0(content, collapse = '\n')
+      })
+      do.call('paste0', html)  
+      
+    }
+    
     withProgress(message = 'Loading Pages',
                  detail= 'Please wait', value=0,
                  {
                    if(input$htmlSource == 'url'){
-                     incProgress(1/3, detail = 'From URL')
-                     html<-getURL(input$url, .encoding=input$encoding)
+                     html<-getHtmlFromURLs(wait=input$wait)
                    }else{
-                     incProgress(1/3, detail = 'From File Upload')
-                     html<-try(readLines(input$html_file$datapath, encoding=input$encoding))
-                     html<-paste0(html, collapse = '\n')
+                     html<-getHtmlFromUploads()
                    }
                    updateAceEditor(session, 'html_codes', value=html, mode="html", theme='textmate')
                  })
@@ -36,7 +61,7 @@ shinyServer(function(input, output, session) {
     htmlParse(input$html_codes, asText=TRUE, encoding=input$encoding)
   })
   
-  xpath <- reactiveValues(data = NULL)
+  xpath <- reactiveValues(data = list())
   
   observeEvent(input$add, {
     xpath$data[[input$name]] <- xPathContent()
@@ -44,6 +69,10 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$remove, {
     xpath$data[[input$name]] <- NULL
+  })
+  
+  observeEvent(input$clear, {
+    xpath$data <- list()
   })
   
   xPathContent <- reactive({
