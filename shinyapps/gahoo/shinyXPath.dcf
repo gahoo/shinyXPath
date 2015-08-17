@@ -1,4 +1,8 @@
 name: shinyXPath
 account: gahoo
+<<<<<<< HEAD
 bundleId: 238170
+=======
+bundleId: 238619
+>>>>>>> 10b9b306d179b761dc1a0c0971d66717c8cf3a25
 url: https://gahoo.shinyapps.io/shinyXPath
