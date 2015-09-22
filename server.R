@@ -84,6 +84,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$preview <- renderText({
+    updateAceEditor(session, 'results', value=paste0(xPathContent(),collapse = '\n'), mode="html", theme='textmate')
     head(xPathContent())
   })
   

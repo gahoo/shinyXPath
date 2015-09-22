@@ -12,7 +12,7 @@ shinyUI(fluidPage(
                               selected = 'url'),
                  selectInput('encoding', 'encoding',
                              choice = c('unknown', 'gb2312', 'gbk', 'big5', 'utf-8'),
-                             selected = 'unknown'),
+                             selected = 'utf-8'),
                  uiOutput('html_input'),
                  actionButton('load', 'Load page'),
                  textOutput('debug')
@@ -35,6 +35,8 @@ shinyUI(fluidPage(
         tabPanel('HTML',
                  aceEditor("html_codes", mode='html', value="", height="700px")
                  ),
+        tabPanel('Results',
+                 aceEditor("results", mode='text', value="", height="700px")),
         tabPanel('Table',
                  wellPanel(textOutput('preview')),
                  checkboxInput('sameEncodingOnSave', 'same Encoding with source', F),
